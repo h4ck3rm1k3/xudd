@@ -10,6 +10,7 @@ from xudd.tools import (
     base64_uuid4, is_qualified_id, join_id, split_id,
     import_component)
 from xudd.actor import Actor
+import pprint
 
 _log = logging.getLogger(__name__)
 
@@ -27,8 +28,11 @@ class Hive(Actor):
     TODO: This docstring sucks ;)
     """
     def __init__(self, hive_id=None, loop=None):
+        print( "hive_id: %s" %hive_id )
         # id of the hive
         self.hive_id = hive_id or self.gen_actor_id()
+
+        print( "self.hive_id: %s" % self.hive_id )
 
         hive_proxy = self.gen_proxy()
         super(Hive, self).__init__(
@@ -111,8 +115,18 @@ class Hive(Actor):
 
 
     def _process_message(self, message):
-        # Route appropriately here
+        pprint.pprint({
+            "message" : message,
+            "self" : self,
+            "self.hive_id" : self.hive_id,
+            "to" : message.to,
+            });
+            # Route appropriately here
         actor_id, hive_id = split_id(message.to)
+        pprint.pprint({
+            "actor_id" : actor_id,
+            "hive_id" : hive_id
+        })
 
         ## Is the actor local?  Send it!
         if hive_id == self.hive_id:
